@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.11.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<!-- Root Context: defines shared resources visible to all other web components -->
+
+
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+
+	<jpa:repositories base-package="com.hjs.readit.repository"></jpa:repositories>
+	
+	
+	<bean id="readItDataSource" class="com.zaxxer.hikari.HikariDataSource">
+	    <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+		<!-- <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"></property> -->
+	    <property name="jdbcUrl" value="jdbc:mysql://awseb-e-z9vpzp3dj8-stack-awsebrdsdatabase-0los8wjyjxgs.cwweggps4mkz.ap-northeast-2.rds.amazonaws.com:3306/Readitmates"/>
+	    <property name="username" value="Readit" />
+	    <property name="password" value="Readitmates3" />
+	    <property name="maxLifetime" value="7200000" />
+	    <property name="maximumPoolSize" value="5" />
+	    <property name="idleTimeout" value="600000" />
+	    <property name="connectionTimeout" value="30000" />
+	</bean>
+
+	<bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+	 		<property name="showSql" value="false"/>
+            <property name="generateDdl" value="true"/>
+            <property name="databasePlatform" value="org.hibernate.dialect.MySQL8Dialect"/>
+	</bean>
+
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="readItDataSource"></property>
+		<property name="jpaVendorAdapter" ref="jpaVendorAdapter"></property>
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"></property>
+	</bean>
+	
+	<tx:annotation-driven/>
+	
+</beans>
